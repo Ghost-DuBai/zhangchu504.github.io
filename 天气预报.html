@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>天气预报</title>
+    <style>
+      div{
+        background: url(./1.gif);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+      }
+    </style>
     <script src="vue.js"></script>
     <script src="axios.js"></script>
     <link rel="stylesheet" href="./css/bootstrap.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
 </head>
 <body>
     <div id="app">
@@ -43,21 +50,26 @@
                            <td>风向</td>
                            <td>最高温度</td>
                            <td>最低温度</td>
+                           <td>天气</td>
                        </tr>
                        <tr v-for="(item,index) in list">
                            <td>{{ item.date }}</td>
                            <td>{{ item.day.winddirect }}</td>
                            <td>{{ item.day.temphigh }}</td>
                            <td>{{ item.night.templow }}</td>
+                           <td><img width="40" :src="'./icon/' + item.day.img + '.png'" alt=""></td>
                        </tr>
                    </table>
                </div>
                <div class="chaxun">
-                   <div class="form-group">
-                       <label for="cityname">输入城市</label>
-                       <input type="text" class="form-control" v-model="city" id="cityname" placeholder="柳州">
-                   </div>
-                   <button type="submit" @click="getWeather" class="btn btn-info">查询</button>
+                   <form action="">
+                       <div class="form-group">
+                           <label for="cityname">输入城市</label>
+                           <input type="text" class="form-control" v-model="city" id="cityname" placeholder="柳州">
+                       </div>
+<!--                       submit在外部有form的时候，会执行自己的默认事件，提交表单-->
+                       <button type="button" @click="getWeather" class="btn btn-info">查询</button>
+                   </form>
                </div>
            </div>
 <!--            菜谱，当hidden==false的时候显示-->
@@ -111,8 +123,6 @@
                     <button type="submit" @click="caipu" class="btn btn-info">查询</button>
                 </div>
             </div>
-
-
         </div>
     </div>
 </body>
@@ -144,7 +154,8 @@
                 axios.get('http://localhost:3000/getweather?city=' +  this.city).then(function (response) {
                     console.log(response.data.result.daily);
                     _this.list = response.data.result.daily
-                })
+                });
+
             },
             qihuanfun:function(bool){
                 this.hidden = bool;
@@ -157,15 +168,18 @@
                 })
 
             }
+        },
+        beforeMount:function(){
+            let _this = this;
+            axios.get('http://localhost:3000/getip?ip=' +  returnCitySN.cip).then(function (response) {
+                console.log(response.data.result.city);
+                axios.get('http://localhost:3000/getweather?city=' +  response.data.result.city).then(function (res) {
+                    console.log(res.data.result.daily);
+                    _this.list = res.data.result.daily
+                })
+            })
         }
     })
 
 
-</script>
-
-
-<script src="http://pv.sohu.com/cityjson?ie=UTF-8"></script>
-<script>
-  var cityCode=returnCitySN.cid;
-  console.log(returnCitySN);
 </script>
