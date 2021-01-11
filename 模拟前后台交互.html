@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <script src="vue.js"></script>
+        <script src="axios.js"></script>
+        <link rel="stylesheet" href="./css/bootstrap.css">
+    </head>
+    <body>
+        <div id="app">
+            <table class="table table-striped">
+                <tr>
+                    <td>商品名称</td>
+                    <td>商品图片</td>
+                    <td>商品数量</td>
+                    <td>商品价格</td>
+                </tr>
+                <tr v-for="(item,index) in list">
+                    <td>{{ item.name }}</td>
+                    <td><img width="50px" v-bind:src="item.imgurl" alt=""></td>
+                    <td>{{ item.number }}</td>
+                    <td>{{ item.price }}</td>
+                </tr>
+            </table>
+            <button @click="fuzhi">点击赋值</button>
+        </div>
+    </body>
+</html>
+<script>
+    // 接口说明:
+    // 1./getfood
+    //
+    //     type: get
+    //
+    // 2./getgood
+    //
+    //     type:get
+
+    // fetch(url).then(function(res){
+    //     return res.json()
+    // }).then(function(res){
+    //     //  处理res
+    //     //  console
+    // })
+
+    new Vue({
+
+        el:'#app',
+
+        data:{
+            list:'这是列表'
+        },
+
+        methods:{
+            fuzhi:function(){
+                // var that = this;//  Vue对象
+                /*
+                * 微信小程序，Vue,React都需要转接this
+                *
+                * */
+                //  ajax和后台交互需要时间
+                //  异步函数
+                //  window对象的函数   laert()  console.log()
+                // fetch('http://localhost:3000/getgood').then(function(res){
+                //     return res.json()
+                // }).then(function(res){
+                //     console.log(res.data);
+                //     that.list = res.data;
+                // })
+                let _this = this
+                axios.get('http://localhost:3000/getgood').then(function (response) {
+                    console.log(response.data.data);
+                    console.log(this);
+                    _this.list = response.data.data
+                })
+                console.log(this);
+                // this.list = [{
+                //     name:'花椒锅巴',
+                //     imgurl:'./1.jpg',
+                //     price:19.9,
+                //     number:0
+                // },{
+                //     name:'芒果干',
+                //     imgurl:'./2.jpg',
+                //     price:23.5,
+                //     number:0
+                // },{
+                //     name:'猪肉脯',
+                //     imgurl:'./3.jpg',
+                //     price:22,
+                //     number:0
+                // },{
+                //     name:'巧克力',
+                //     imgurl:'./4.jpg',
+                //     price:99,
+                //     number:0
+                // }]
+            }
+        }
+
+
+    })
+
+
+
+</script>
